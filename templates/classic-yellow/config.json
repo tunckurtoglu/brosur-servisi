@@ -1,0 +1,16 @@
+{
+  "id": "classic-yellow",
+  "name": "Klasik Sarı",
+  "description": "Sarı-kırmızı tonlarında geleneksel restoran broşürü",
+  "version": "1.0.0",
+  "size": "A4",
+  "orientation": "portrait",
+  "requiredFields": [
+    "restaurantName",
+    "tagline",
+    "logo",
+    "mainImage",
+    "secondaryImage",
+    "qrCode"
+  ]
+}

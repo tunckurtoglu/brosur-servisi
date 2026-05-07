@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>{{restaurantName}} - Tanıtım Broşürü</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div class="brochure">
+
+    <!-- ÜST YARIM: Yemek görselleri -->
+    <div class="hero-section">
+      <img src="{{mainImage}}" alt="Ana yemek" class="main-image">
+      <div class="secondary-image-wrapper">
+        <img src="{{secondaryImage}}" alt="İkinci yemek" class="secondary-image">
+      </div>
+    </div>
+
+    <!-- LOGO ALANI -->
+    <div class="logo-section">
+      <img src="{{logo}}" alt="{{restaurantName}}" class="logo">
+      <div class="tagline-ribbon">"{{tagline}}"</div>
+    </div>
+
+    <!-- ÖZEL TEKLİF ROZETİ -->
+    <div class="offer-badge">
+      <div class="offer-top">Restoranımızın Uygulamasından</div>
+      <div class="offer-bottom">
+        <div class="offer-line1">İlk siparişinize özel</div>
+        <div class="offer-line2">100 TL <span class="offer-emphasis">İNDİRİM!</span></div>
+      </div>
+    </div>
+
+    <!-- QR KOD ALANI -->
+    <div class="qr-section">
+      <div class="qr-label">QR kodu<br>okutun</div>
+      <img src="{{qrCode}}" alt="QR Kod" class="qr-code">
+    </div>
+
+    <!-- 4 ÖZELLİK KUTUSU -->
+    <div class="features">
+
+      <div class="feature">
+        <div class="feature-title">Yedikçe Cüzdanın Dolsun,<br>Nakit İade Biriksin!</div>
+        <div class="feature-text">
+          Kazandığın bakiyeyi dilediğin gibi kullan.
+          İster siparişlerinde indirim al, ister bedava sipariş ver!
+        </div>
+      </div>
+
+      <div class="feature">
+        <div class="feature-title-yellow">Sipariş Verdikçe Level Atla,<br>Ödülleri Kap!</div>
+        <div class="feature-text">
+          Sipariş verdikçe seviye atla; her yeni levelda
+          bedava ürünler ve sürpriz hediyeler seni bekliyor!
+        </div>
+      </div>
+
+      <div class="feature">
+        <div class="feature-title-yellow">En uygun fiyatlar ve<br>flaş kampanyalar!</div>
+        <div class="feature-text">
+          Doğrudan restoranımızdan; avantajlı fiyatlar ve
+          indirimlerle sipariş ver!
+        </div>
+      </div>
+
+      <div class="feature">
+        <div class="feature-title">Hafızanız Dolmasın,<br>Karnınız Doysun!</div>
+        <div class="feature-text">
+          Uygulama indirmekle uğraşma, telefonunda yer kaplama.
+          QR kodu tara, "Ana ekrana ekle"ye tıkla; saniyeler içinde sipariş ver!
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</body>
+</html>
