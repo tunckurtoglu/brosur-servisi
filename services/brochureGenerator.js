@@ -5,6 +5,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { execSync } = require('child_process');
 const Handlebars = require('handlebars');
 
 const { generateQRCode } = require('./qrService');
@@ -43,21 +44,76 @@ function validateRestaurantData(data, requiredFields) {
   }
 }
 
+
 /**
- * CSS'i HTML'in <head> bölümüne <style> olarak gömer
- * (link rel="stylesheet" satırını kaldırır)
+ * RGB PDF'i Ghostscript ile CMYK'ya çevirir (matbaa baskısı için).
+ * Ghostscript yoksa veya hata varsa orijinal RGB PDF'i bırakır.
  */
-function injectCSS(html, css) {
-  // Mevcut <link rel="stylesheet"...> satırını kaldır
+function convertToCMYK(pdfPath) {
+  try {
+    const tmpPath = pdfPath.replace(/\.pdf$/, '_cmyk.pdf');
+    const cmd = [
+      'gs',
+      '-dNOPAUSE', '-dBATCH', '-dQUIET',
+      '-sDEVICE=pdfwrite',
+      '-dProcessColorModel=/DeviceCMYK',
+      '-sColorConversionStrategy=CMYK',
+      '-sColorConversionStrategyForImages=CMYK',
+      '-dPDFSETTINGS=/prepress',
+      `-sOutputFile=${tmpPath}`,
+      pdfPath
+    ].join(' ');
+
+    execSync(cmd, { stdio: 'pipe' });
+
+    // CMYK çıktısı başarılıysa orijinal yerine koy
+    if (fs.existsSync(tmpPath)) {
+      fs.renameSync(tmpPath, pdfPath);
+      console.log('CMYK donusumu tamamlandi: ' + pdfPath);
+      return true;
+    }
+    return false;
+  } catch (err) {
+    console.warn('CMYK donusumu basarisiz, RGB birakildi: ' + err.message);
+    return false;
+  }
+}
+
+/**
+ * Font dosyalarını base64'e çevirip CSS içindeki url() referanslarını
+ * data URI ile değiştirir.
+ */
+function inlineFonts(css, templatePath) {
+  return css.replace(
+    /url\((['"]?)(fonts\/[^'")]+)\1\)/g,
+    function(match, quote, fontPath) {
+      try {
+        const fullPath = path.join(templatePath, fontPath);
+        if (!fs.existsSync(fullPath)) {
+          console.warn('Font bulunamadi: ' + fullPath);
+          return match;
+        }
+        const fontData = fs.readFileSync(fullPath);
+        const base64 = fontData.toString('base64');
+        const ext = path.extname(fontPath).slice(1);
+        const mime = ext === 'woff2' ? 'font/woff2' : 'font/woff';
+        return 'url(data:' + mime + ';base64,' + base64 + ')';
+      } catch (err) {
+        console.warn('Font gomulemedi: ' + err.message);
+        return match;
+      }
+    }
+  );
+}
+
+function injectCSS(html, css, templatePath) {
+  const cssWithFonts = templatePath ? inlineFonts(css, templatePath) : css;
   let cleanHtml = html.replace(
     /<link[^>]*rel=["']stylesheet["'][^>]*>/gi,
     ''
   );
-
-  // CSS'i <head> kapanışından önce göm
-  const styleTag = `<style>\n${css}\n</style>`;
-  cleanHtml = cleanHtml.replace('</head>', `${styleTag}\n</head>`);
-
+  const styleTag = '<style>\n' + cssWithFonts + '\n</style>';
+  cleanHtml = cleanHtml.replace('</head>', styleTag + '\n</head>');
   return cleanHtml;
 }
 
@@ -110,7 +166,7 @@ async function generateBrochure(restaurantData, templateId = 'classic-yellow') {
   };
 
   // 8. CSS'i HTML'e göm
-  const htmlWithCSS = injectCSS(template.html, template.css);
+  const htmlWithCSS = injectCSS(template.html, template.css, template.path);
 
   // 9. Handlebars ile {{...}} alanlarını doldur
   const compiledTemplate = Handlebars.compile(htmlWithCSS);
@@ -133,6 +189,9 @@ async function generateBrochure(restaurantData, templateId = 'classic-yellow') {
   // 12. Diske yaz
   fs.writeFileSync(pdfPath, pdfBuffer);
   fs.writeFileSync(pngPath, pngBuffer);
+
+  // RGB → CMYK donusumu (matbaa baskisi icin)
+  convertToCMYK(pdfPath);
 
   // 13. URL'leri döndür (server.js'te /brochures/ altında serve ediliyor)
   return {

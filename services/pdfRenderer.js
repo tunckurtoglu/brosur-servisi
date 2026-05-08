@@ -37,7 +37,8 @@ async function renderToPDF(htmlContent, options = {}) {
 
     // 4. PDF ayarları (varsayılan + kullanıcının verdikleri)
     const pdfOptions = {
-      format: 'A4',
+      width: '154mm',
+      height: '216mm',
       printBackground: true,    // Arka plan renklerini ve görselleri PDF'e dahil et
       preferCSSPageSize: true,  // CSS @page kuralını kullan
       margin: {
@@ -89,9 +90,9 @@ async function renderToPNG(htmlContent, options = {}) {
     // A4 boyutunda viewport ayarla (210mm × 297mm @ 96dpi ≈ 794 × 1123)
     // 2x ölçek = yüksek çözünürlük (Retina kalitesi)
     await page.setViewport({
-      width: 794,
-      height: 1123,
-      deviceScaleFactor: 2
+      width: 1819,
+      height: 2551,
+      deviceScaleFactor: 1
     });
 
     await page.setContent(htmlContent, {
