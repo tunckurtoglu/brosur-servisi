@@ -46,7 +46,7 @@ body {
 }
 
 .hero {
-  height: 78mm;
+  height: 72mm;
   position: relative;
   overflow: hidden;
   border-radius: 9mm 9mm 0 0;
@@ -98,9 +98,9 @@ body {
   display: grid;
   grid-template-columns: 1fr 1.25fr;
   gap: 6mm;
-  padding: 0 6mm 5mm;
+  padding: 0 6mm 4mm;
   margin-top: -4mm;
-  height: calc(100% - 78mm);
+  height: calc(100% - 72mm);
 }
 
 .left {
