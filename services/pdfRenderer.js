@@ -100,15 +100,31 @@ async function renderToPNG(htmlContent, options = {}) {
       timeout: 30000
     });
 
-    // Tam sayfa ekran görüntüsü al
-    const screenshotOptions = {
-      type: 'png',
-      fullPage: true,
-      omitBackground: false,
-      ...options
-    };
-
-    const pngBuffer = await page.screenshot(screenshotOptions);
+    // .flyer veya .brochure elementinin tam koordinatlarini al,
+    // screenshot'i sadece o alanla sinirla
+    const elementHandle = await page.$('.flyer, .brochure');
+    let pngBuffer;
+    if (elementHandle) {
+      const box = await elementHandle.boundingBox();
+      pngBuffer = await page.screenshot({
+        type: 'png',
+        clip: {
+          x: box.x,
+          y: box.y,
+          width: box.width,
+          height: box.height
+        },
+        omitBackground: false,
+        ...options
+      });
+    } else {
+      pngBuffer = await page.screenshot({
+        type: 'png',
+        fullPage: true,
+        omitBackground: false,
+        ...options
+      });
+    }
 
     return pngBuffer;
 

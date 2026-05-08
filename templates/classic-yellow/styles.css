@@ -152,6 +152,19 @@ body {
   object-fit: contain;
 }
 
+.green-ribbon {
+  background: #1F5F3F;
+  color: #FFFFFF;
+  font-size: 9.5pt;
+  font-style: italic;
+  font-weight: 700;
+  text-align: center;
+  padding: 1.2mm 6mm;
+  display: inline-block;
+  clip-path: polygon(7% 0, 93% 0, 100% 50%, 93% 100%, 7% 100%, 0% 50%);
+  margin: 0 auto 2mm;
+}
+
 /* "Restoranımızın Uygulamasından" sarı ribbon */
 .ribbon {
   background: #FFD522;
